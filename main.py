@@ -52,14 +52,13 @@ for i, post in enumerate(totalPosts):
     postTitle = post.find("span","market_listing_item_name").get_text()
     postPrice = post.find("span","normal_price").get_text()
     postQuantity = post.find("span","market_listing_num_listings_qty").get_text()
-    lali = postPrice.split("$")
-    porn = lali[1:3]
-    loki = "$", porn[0].split(" ")[0], "$",porn[1].split(" ")[0], "USD"
-    loki = str(loki).split("'")
-    LOKI = loki[1]+loki[3]+" "+loki[9]
-    postIVA = round(float(loki[3])/1.15-0.01, 2)
+    Splitting = postPrice.split("$")
+    Price = Splitting[1:3]
+    Priceformat = "$", Price[0].split(" ")[0], "$",Price[1].split(" ")[0], "USD"
+    Priceformat = str(Priceformat).split("'")
+    Full_phrase = Priceformat[1]+Priceformat[3]+" "+Priceformat[9]
+    postIVA = round(float(Priceformat[3])/1.15-0.01, 2)
     postIVA = postIVA
-    lel = "| After tax: "
-    print(f"{i+1}: {postTitle} {postQuantity} {str(LOKI)} {lel} {postIVA}")
+    print(f"{i+1}: {postTitle} {postQuantity} {str(Full_phrase)} | After tax: {postIVA}")
 
 driver.quit()
