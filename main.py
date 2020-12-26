@@ -4,17 +4,23 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
+
 DRIVER_PATH = r"C:/Users/gabri/Mine/apps/chromedriver/chromedriver.exe"
+
+# Change BASE_URL to your liking
 BASE_URL = "https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Type%5B%5D=tag_CSGO_Type_Pistol&category_730_Type%5B%5D=tag_CSGO_Type_SMG&category_730_Type%5B%5D=tag_CSGO_Type_Rifle&category_730_Type%5B%5D=tag_CSGO_Type_SniperRifle&category_730_Type%5B%5D=tag_CSGO_Type_Shotgun&category_730_Type%5B%5D=tag_CSGO_Type_Machinegun&category_730_Type%5B%5D=tag_CSGO_Type_Knife&category_730_Type%5B%5D=tag_Type_Hands&category_730_Type%5B%5D=tag_CSGO_Tool_Patch&category_730_Type%5B%5D=tag_CSGO_Tool_WeaponCase_KeyTag&category_730_Type%5B%5D=tag_CSGO_Type_Ticket&appid=730#p"
 FINAL_TAG = "_price_asc"
 number = int()
 
 options = Options()
 options.headless = True
+# window size argument is necessary because of the simulated window size
 options.add_argument("--window.size=1920,1200")
 
+# Initialize webdriver with selected options
 driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
 
+# In charge of getting the page cache
 def stepThroughPages(posts, pageNumber):
     driver.get(BASE_URL+str(pageNumber)+FINAL_TAG)
     time.sleep(15)
@@ -24,16 +30,24 @@ def stepThroughPages(posts, pageNumber):
     TotalResult = TotalResult.split(".")
     TotalResults = TotalResult[0] + TotalResult[1]
 
+    # Number of pages to search through
+    Selected_Pagenumb = 75
+
+    # In case you want the total amount of pages delete the previous definition
+    #Selected_Pagenumb = Total Results
     
     posts.extend(soup.find_all("div","market_listing_row market_recent_listing_row market_listing_searchresult"))
 
-    if pageNumber >= 7 or pageNumber >= 770: return posts
+    if pageNumber >= Selected_Pagenumb or pageNumber >= TotalResult: return posts
     pageNumber += 1
     return stepThroughPages(posts, pageNumber)
 
 
 totalPosts = stepThroughPages([], 1)
+# Reality check
 print(len(totalPosts))
+
+# In charge of getting every stat from each post
 for i, post in enumerate(totalPosts):
     postTitle = post.find("span","market_listing_item_name").get_text()
     postPrice = post.find("span","normal_price").get_text()
