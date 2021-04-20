@@ -1,11 +1,12 @@
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import html5lib
 import time
 import math
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 
 
-DRIVER_PATH = r"C:/Users/gabri/Mine/apps/chromedriver/chromedriver.exe"
 
 # Change BASE_URL to your liking
 BASE_URL = "https://steamcommunity.com/market/search?q=&category_730_ItemSet%5B%5D=any&category_730_ProPlayer%5B%5D=any&category_730_StickerCapsule%5B%5D=any&category_730_TournamentTeam%5B%5D=any&category_730_Weapon%5B%5D=any&category_730_Type%5B%5D=tag_CSGO_Type_Pistol&category_730_Type%5B%5D=tag_CSGO_Type_SMG&category_730_Type%5B%5D=tag_CSGO_Type_Rifle&category_730_Type%5B%5D=tag_CSGO_Type_SniperRifle&category_730_Type%5B%5D=tag_CSGO_Type_Shotgun&category_730_Type%5B%5D=tag_CSGO_Type_Machinegun&category_730_Type%5B%5D=tag_CSGO_Type_Knife&category_730_Type%5B%5D=tag_Type_Hands&category_730_Type%5B%5D=tag_CSGO_Tool_Patch&category_730_Type%5B%5D=tag_CSGO_Tool_WeaponCase_KeyTag&category_730_Type%5B%5D=tag_CSGO_Type_Ticket&appid=730#p"
@@ -18,7 +19,7 @@ options.headless = True
 options.add_argument("--window.size=1920,1200")
 
 # Initialize webdriver with selected options
-driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
+driver = webdriver.Chrome(options=options, executable_path=ChromeDriverManager().install())
 
 # In charge of getting the page cache
 def stepThroughPages(posts, pageNumber):
@@ -38,7 +39,7 @@ def stepThroughPages(posts, pageNumber):
     
     posts.extend(soup.find_all("div","market_listing_row market_recent_listing_row market_listing_searchresult"))
 
-    if pageNumber >= Selected_Pagenumb or pageNumber >= TotalResult: return posts
+    if pageNumber >= Selected_Pagenumb or pageNumber >= int(TotalResults): return posts
     pageNumber += 1
     return stepThroughPages(posts, pageNumber)
 
